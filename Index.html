@@ -12,7 +12,7 @@
 	{
 		background:		#0cc;
 		font-family:	MsSansSerif, Arial;
-		font-size:		12px;
+		font-size:		10px;
 		position:		relative;
 	}
 	
@@ -49,8 +49,14 @@
 		/* x offset, y offset, blur radius, spread radius, colour */
 		box-shadow:		-1px -1px 0px 0px #888, 1px 1px 0px 0px #fff;
 
-		
+		display:block;
 		margin:	1px;
+		
+		position:	absolute;
+		bottom:	0px;
+		top:		0px;
+		left:		0px;
+		right:		0xp;
 		
 		background:		#fff;
 	}
@@ -62,6 +68,8 @@
 		padding:	3px;
 		color:		#fff;
 		margin-bottom:	3px;
+		font-weight:	bolder;
+		
 	}
 
 	.Icon
@@ -70,8 +78,8 @@
 		position:	relative;
 		width:		82px;
 		height:		62px;
-		border:		dotted 1px #000;
-		margin;		50px;
+		xborder:		dotted 1px #000;
+		margin:		4px;
 	}
 
 	.IconIcon
@@ -86,12 +94,29 @@
 
 	.IconLabel
 	{
+		display:block;
 		position:	absolute;
 		top:		36px;
+		
 		/* align this to center */
-		margin:		0px;
-		padding:	1px;
+		margin:		0 auto;
+		width:		calc(100% - 6px);
+		
+		padding:	2px;
+		xborder:		dotted 1px #000;
+		text-align:	center;
+	}
+
+.Icon::last-child
+	{
+		/* border doesnt work */
 		border:		dotted 1px #000;
+	}
+
+	.Icon:hover .IconLabel::first-line
+	{
+		background:	#00C;
+		color:		#fff;
 	}
 
 
