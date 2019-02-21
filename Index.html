@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+<head>
+<style type=text/css>
+	@font-face
+	{
+		font-family: MsSansSerif;
+		src: url("micross.ttf") ;/*format("opentype");*/
+	}
+
+	body, .Desktop
+	{
+		background:		#0cc;
+		font-family:	MsSansSerif, Arial;
+		font-size:		12px;
+		position:		relative;
+	}
+	
+	.Window
+	{
+		/* 2 borders on a window! */
+		border-top:		1px #fff solid;
+		border-left:	1px #fff solid;
+		border-bottom:	1px #888 solid;
+		border-right:	1px #888 solid;
+		/* x offset, y offset, blur radius, spread radius, colour */
+		box-shadow:		1px 1px 0px 0px #000, -1px -1px 0px 0px #ccc;
+
+		padding:		1px;
+		
+		background:		#ccc;
+		
+		position:	absolute;
+		left:		100px;
+		top:		200px;
+		width:	300px;
+		height:	300px;
+	}
+
+
+	.IconView
+	{
+		/* embossed border */
+		/* 2 borders on a window! */
+		border-bottom:	1px #ccc solid;
+		border-right:	1px #ccc solid;
+		border-top:		1px #000 solid;
+		border-left:	1px #000 solid;
+		/* x offset, y offset, blur radius, spread radius, colour */
+		box-shadow:		-1px -1px 0px 0px #888, 1px 1px 0px 0px #fff;
+
+		
+		margin:	1px;
+		
+		background:		#fff;
+	}
+
+
+	.TitleBar
+	{
+		background:	#00c;
+		padding:	3px;
+		color:		#fff;
+		margin-bottom:	3px;
+	}
+
+	.Icon
+	{
+		display:	inline-block;
+		position:	relative;
+		width:		82px;
+		height:		62px;
+		border:		dotted 1px #000;
+		margin;		50px;
+	}
+
+	.IconIcon
+	{
+		position:	absolute;
+		top:	0px;
+		left:	25px;
+		width:	32px;
+		height:	32px;
+		background:	#f00;
+	}
+
+	.IconLabel
+	{
+		position:	absolute;
+		top:		36px;
+		/* align this to center */
+		margin:		0px;
+		padding:	1px;
+		border:		dotted 1px #000;
+	}
+
+
+</style>
+</head>
+<body>
+
+<div class=Window>
+<div class=TitleBar>Test Window</div>
+<div class=IconView>
+	<div class=Icon><div class=IconIcon></div><div class=IconLabel>CartMon.exe</div></div>
+	<div class=Icon><div class=IconIcon></div><div class=IconLabel>OtherIcon.exe</div></div>
+	<div class=Icon><div class=IconIcon></div><div class=IconLabel>Hi</div></div>
+</div>
+</div>
+
+<script>
+	
+	//	have a dom manager
+		//	get input, deliver to control
+		
+	//	render commands
+		//	iterate over dom
+		//	for every "draw quad", update uniforms (styles)
+	
+	//	window manager
+		//	what is foreground window
+		//	foreach window
+			//	selected controls (windows has focus+selected)
+
+function TRenderCommand()
+{
+	this.Rect = [];			//	local to parent
+	this.Uniforms = [];
+}
+
+//	bridge document to a dom
+function HtmlDom()
+{
+	//	OnMouseDown
+	//	OnMouseMove
+	//	OnScroll
+	//	RenderTree (getting render commands)
+	this.GetRenderCommands = function()
+	{
+		//	iterate dom and get new commands
+		return [];
+	}
+}
+
+function PopHtml()
+{
+	this.ApplyUniform = function(Element,Uniform,Value)
+	{
+		//	todo: convert numbers to px
+		Element.style[Uniform] = Value;
+	}
+
+	this.ApplyRenderCommand = function(Command,Element)
+	{
+		//	Rect = new position
+		//	uniforms = style
+		Command.Uniforms['left'] = Command.Rect[0];
+		Command.Uniforms['top'] = Command.Rect[1];
+		Command.Uniforms['right'] = Command.Rect[0] + Command.Rect[2];
+		Command.Uniforms['bottom'] = Command.Rect[1] + Command.Rect[3];
+		
+		//	apply all uniforms
+		let ApplyUniform = function(Key)
+		{
+			let Value = Command.Uniforms[Key];
+			this.ApplyUniform( Element, Key, Value );
+		};
+		let UniformKeys = Object.keys( Command.Uniforms );
+		UniformKeys.forEach( ApplyUniform.bind(this) );
+	}
+	
+	this.Render = function(RenderCommands)
+	{
+		let RenderTheCommand = function(RenderCommand)
+		{
+			let Element = undefined;
+			this.ApplyRenderCommand( RenderCommand, Element );
+		}
+		RenderCommands.forEach( RenderTheCommand.bind(this) );
+	}
+}
+
+//	in theory, we can swap these so Dom can become an arbirtry renderer for a GL component
+//	or we can stream render commands
+var Renderer = new PopHtml();
+var Dom = new HtmlDom();
+
+	function Update()
+	{
+		let RenderCommands = Dom.GetRenderCommands();
+		Renderer.Render( RenderCommands );
+	}
+	
+	
+</script>
+
+</body>
