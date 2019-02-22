@@ -1,38 +1,56 @@
 <!doctype html>
 <html>
 <head>
+	<svg height="0px" width="0px">
+		<defs>
+			#ffffff
+			<filter id="BlueFilter">
+				<feColorMatrix type="matrix" values="
+				0.5 0 0 0 0
+				0 0.5 0 0 0
+				0 0 1 0 0
+				0 0 0 1 0"/>
+			</filter>
+		</defs>
+	</svg>
 <style type=text/css>
 	@font-face
 	{
 		font-family: MsSansSerif;
-		src: url("micross.ttf") ;/*format("opentype");*/
+		xxsrc: url("micross.ttf") ;/*format("opentype");*/
+		src: url("MsSansSerif.ttf") ;/*format("opentype");*/
 	}
 
 	body, .Desktop
 	{
-		background:		#0cc;
+		/* current closest I can get to original */
 		font-family:	MsSansSerif, Arial;
-		font-size:		10px;
+		font-smooth: never;
+		-webkit-font-smoothing : none;
+		font-size:		11px;
+
+		background:		#0cc;
+
 		position:		relative;
 	}
 	
 	.Window
 	{
 		/* 2 borders on a window! */
-		border-top:		1px #fff solid;
-		border-left:	1px #fff solid;
-		border-bottom:	1px #888 solid;
-		border-right:	1px #888 solid;
+		border-top:		1px #ccc solid;
+		border-left:	1px #ccc solid;
+		border-bottom:	1px #000 solid;
+		border-right:	1px #000 solid;
 		/* x offset, y offset, blur radius, spread radius, colour */
-		box-shadow:		1px 1px 0px 0px #000, -1px -1px 0px 0px #ccc;
+		box-shadow:		inset 1px 1px 0px 0px #fff, inset -1px -1px 0px 0px #888;
 
-		padding:		1px;
+		padding:		3px;
 		
 		background:		#ccc;
 		
 		position:	absolute;
-		left:		100px;
-		top:		200px;
+		left:		10px;
+		top:		20px;
 		width:	300px;
 		height:	300px;
 	}
@@ -42,22 +60,22 @@
 	{
 		/* embossed border */
 		/* 2 borders on a window! */
-		border-bottom:	1px #ccc solid;
-		border-right:	1px #ccc solid;
-		border-top:		1px #000 solid;
-		border-left:	1px #000 solid;
+		border-bottom:	1px #fff solid;
+		border-right:	1px #fff solid;
+		border-top:		1px #888 solid;
+		border-left:	1px #888 solid;
 		/* x offset, y offset, blur radius, spread radius, colour */
-		box-shadow:		-1px -1px 0px 0px #888, 1px 1px 0px 0px #fff;
+		box-shadow:		inset -1px -1px 0px 0px #ccc, inset 1px 1px 0px 0px #000;
 
 		display:block;
 		margin:	1px;
-		
+		/*
 		position:	absolute;
 		bottom:	0px;
 		top:		0px;
 		left:		0px;
 		right:		0xp;
-		
+		*/
 		background:		#fff;
 	}
 
@@ -67,8 +85,13 @@
 		background:	#00c;
 		padding:	3px;
 		color:		#fff;
-		margin-bottom:	3px;
-		font-weight:	bolder;
+		margin-bottom:	2px;
+		
+		font-smooth: auto;
+		-webkit-font-smoothing : auto;
+		xfont-size:		11px;
+
+		font-weight:	900;
 		
 	}
 
@@ -78,8 +101,13 @@
 		position:	relative;
 		width:		82px;
 		height:		62px;
-		xborder:		dotted 1px #000;
 		margin:		4px;
+	}
+
+
+	.Icon:hover .IconIcon
+	{
+		filter: url(#BlueFilter);
 	}
 
 	.IconIcon
@@ -89,7 +117,7 @@
 		left:	25px;
 		width:	32px;
 		height:	32px;
-		background:	#f00;
+		xxbackground:	#f00;
 	}
 
 	.IconLabel
@@ -99,26 +127,36 @@
 		top:		36px;
 		
 		/* align this to center */
-		margin:		0 auto;
-		width:		calc(100% - 6px);
+		xmargin:		0 auto;
+		xwidth:		calc(100% - 6px);
 		
 		padding:	2px;
-		xborder:		dotted 1px #000;
 		text-align:	center;
 	}
 
-.Icon::last-child
-	{
-		/* border doesnt work */
-		border:		dotted 1px #000;
-	}
 
-	.Icon:hover .IconLabel::first-line
+	.Icon:hover .IconLabel
 	{
 		background:	#00C;
+		border:		dotted 1px #FF0;
 		color:		#fff;
 	}
 
+.MenuBar .MenuItem:first-letter
+{
+	text-decoration:	underline;
+}
+.MenuBar .MenuItem
+{
+	padding:	4px 4px 4px 6px;
+	display:	inline-block;
+}
+
+.MenuBar .MenuItem:hover
+{
+	background-color:	#00C;
+	color:				#fff;
+}
 
 </style>
 </head>
@@ -126,10 +164,14 @@
 
 <div class=Window>
 <div class=TitleBar>Test Window</div>
+<div class=MenuBar><div class=MenuItem>File</div></div>
 <div class=IconView>
-	<div class=Icon><div class=IconIcon></div><div class=IconLabel>CartMon.exe</div></div>
-	<div class=Icon><div class=IconIcon></div><div class=IconLabel>OtherIcon.exe</div></div>
-	<div class=Icon><div class=IconIcon></div><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/folder.png class=IconIcon></img><div class=IconLabel>CartMon.exe</div></div>
+	<div class=Icon><img src=Icons/cddrive.png class=IconIcon></img><div class=IconLabel>OtherIcon.exe</div></div>
+	<div class=Icon><img src=Icons/recyclefull.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/networkneighbourhood.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/help.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/settings.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
 </div>
 </div>
 
