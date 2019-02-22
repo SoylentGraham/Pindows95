@@ -33,9 +33,10 @@ body, .Desktop
 	
 	background:		#ccc;
 	
-	position:	absolute;
-	left:		10px;
-	top:		20px;
+	xposition:	absolute;
+	position:	relative;
+	xleft:		10px;
+	xtop:		20px;
 }
 
 
@@ -69,7 +70,7 @@ body, .Desktop
 	background:	#00c;
 	padding:	3px;
 	color:		#fff;
-	margin-bottom:	2px;
+	xmargin-bottom:	2px;
 	
 	/*
 	 gr: this is all blurry atm, can't make it pixel-bold :/

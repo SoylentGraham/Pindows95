@@ -23,9 +23,30 @@
 
 	<link rel="stylesheet" type="text/css" href="win95.css">
 
+		<style>
+			#DynamicDom
+			{
+				display:	block;
+				position:	relative;
+				width:		50vw;
+				height:		50vh;
+				xbackground:	black;
+			}
+		
+		.xxx
+		{
+			background:red;
+		}
+		</style>
+		
 </head>
 <body>
 <audio id="StartupSound" src="Icons/tada.mp3"></audio>
+
+
+<div id="DynamicDom"></div>
+
+
 <div class=Window>
 <div class=TitleBar><div class=TitleIcon>X</div><div class=TitleText>Test Window</div><div class=Button>_</div><div class=Button>X</div></div>
 <div class=MenuBar><div class=MenuItem>File</div><div class=MenuItem>Help</div></div>
@@ -53,54 +74,107 @@
 		//	foreach window
 			//	selected controls (windows has focus+selected)
 
-function TRenderCommand()
+function TRenderCommand(ElementName)
 {
-	this.Rect = [];			//	local to parent
+	this.ElementName = ElementName;
+	this.Rect = new Math.Rect(0,0,1,1);			//	local to parent
 	this.Uniforms = [];
 }
 
 
 
-	//	temp as I just want to play the sound
-	function PlayStartupSound(Event)
+//	temp as I just want to play the sound
+function PlayStartupSound(Event)
+{
+	//	if we can't play (probably auto play) then setup an event
+	//	gr: this now is setup so whatever event will fire once the session has been interacted with
+	//		so we can use mousemove
+	let SetupDefferedPlay = function(Exception)
 	{
-		//	if we can't play (probably auto play) then setup an event
-		//	gr: this now is setup so whatever event will fire once the session has been interacted with
-		//		so we can use mousemove
-		let SetupDefferedPlay = function(Exception)
+		document.addEventListener("mousemove", PlayStartupSound);
+		//document.addEventListener("click", PlayStartupSound);
+	};
+	
+	let Sound = document.getElementById("StartupSound");
+	Sound.play().catch(SetupDefferedPlay);
+	
+	//	unsubscribe
+	if ( Event )
+		document.removeEventListener( Event.type, PlayStartupSound);
+}
+
+//	each of these is a control, and has its own drawquad() and uniforms
+//	Window
+//		TitleBar
+//			Icon
+//			TitleText
+//			X Button
+//		MenuBar
+//			File menu
+//			Help menu
+//		IconView
+//			Icon
+Pop.TWindow = function(Dom,Name)
+{
+	let DomElement = Dom.CreateElement(Name);
+	DomElement.Control = this;
+	//this.TitleBar = new Pop.TTitleBar(Dom,Name+"_TitleBar");
+	
+	this.GetRenderCommands = function(ParentRect,Element)
+	{
+		let WindowCmd = new TRenderCommand( Element.Name + 'Window' );
+		WindowCmd.Rect = ParentRect;
+		WindowCmd.Shader = 'Window';
+		
+		let Padding = 4;
+		let TitleBarHeight = 18;
+		//Debug("ParentRect = " + JSON.stringify(ParentRect));
+		let PaddedRects = ParentRect.Split( Padding, 1, 1 );
+		
+		PaddedRects = [PaddedRects[0]];
+		PaddedRects[0].h = TitleBarHeight;
+
+		let TitleBarCmds = [];
+		let MakeTitleBarCmd = function(PaddedRect,Index)
 		{
-			document.addEventListener("mousemove", PlayStartupSound);
-			//document.addEventListener("click", PlayStartupSound);
-		};
-		
-		let Sound = document.getElementById("StartupSound");
-		Sound.play().catch(SetupDefferedPlay);
-		
-		//	unsubscribe
-		if ( Event )
-			document.removeEventListener( Event.type, PlayStartupSound);
+			let TitleBarCmd = new TRenderCommand( Element.Name + 'TitleBar'+Index );
+			Debug("PaddedRect = " +JSON.stringify(PaddedRect) );
+			TitleBarCmd.Rect = PaddedRect;
+			TitleBarCmd.Shader = 'TitleBar';
+			//	override the current CSS for the non-dynamic stuff
+			TitleBarCmd.Uniforms['padding'] = 0;
+			
+			TitleBarCmds.push( TitleBarCmd );
+		}
+		PaddedRects.forEach(MakeTitleBarCmd);
+		return [WindowCmd].concat( TitleBarCmds );;
 	}
+}
 
 
 
 
 //	in theory, we can swap these so Dom can become an arbirtry renderer for a GL component
 //	or we can stream render commands
-var Renderer = new Pop.HtmlRenderer();
+var Renderer = new Pop.HtmlRenderer('DynamicDom');
 var Dom = new Pop.HtmlDom();
+var Debug = Pop.Debug;
+
 
 function Init()
 {
 	PlayStartupSound();
 	
-	//	start update loop
-	Renderer.OnRender = Update;
+	let Window2 = new Pop.TWindow(Dom,'Hello!');
+	
+	Renderer.OnUpdate = Update;
 }
 
 
 function Update()
 {
 	let RenderCommands = Dom.GetRenderCommands();
+	//Debug("got RenderCommands x" + RenderCommands.length);
 	Renderer.Render( RenderCommands );
 }
 
