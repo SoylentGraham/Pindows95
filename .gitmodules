@@ -1,3 +1,9 @@
 [submodule "PopDomJs"]
 	path = PopDomJs
 	url = https://github.com/NewChromantics/PopDomJs.git
+[submodule "PopJs"]
+	path = PopJs
+	url = https://github.com/NewChromantics/PopJs.git
+[submodule "PopJsHtml"]
+	path = PopJsHtml
+	url = https://github.com/NewChromantics/PopJsHtml.git
