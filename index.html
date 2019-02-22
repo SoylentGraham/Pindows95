@@ -67,7 +67,8 @@
 		/* x offset, y offset, blur radius, spread radius, colour */
 		box-shadow:		inset -1px -1px 0px 0px #ccc, inset 1px 1px 0px 0px #000;
 
-		display:block;
+		display:	flex;
+		flex-wrap:	wrap;
 		margin:	1px;
 		/*
 		position:	absolute;
@@ -93,15 +94,52 @@
 
 		font-weight:	900;
 		
+		display:		flex;
+	
+	}
+
+	.TitleBar .TitleIcon
+	{
+		display:	none;
+		width:		16px;
+		xheight:	16px;
+		
+	}
+
+	.TitleBar .TitleText
+	{
+		flex-grow:	99;
+	}
+
+	.TitleBar .Button
+	{
+		background:		#ccc;
+		border-top:		1px #fff solid;
+		border-left:	1px #fff solid;
+		border-bottom:	1px #000 solid;
+		border-right:	1px #000 solid;
+		/* x offset, y offset, blur radius, spread radius, colour */
+		box-shadow:		inset -1px -1px 0px 0px #888, inset 1px 1px 0px 0px #ccc;
+		
+		color:			#000;
+		font-size:		8px;
+		width:			10px;
+		height:			10px;
+		text-align:		center;
+		vertical-align:	middle;
+		font-weight:	bold;
+		font-size:		8px;
+		margin-left:	2px;
 	}
 
 	.Icon
 	{
-		display:	inline-block;
+		display:	flex;
+		justify-content:	center;
 		position:	relative;
 		width:		82px;
 		height:		62px;
-		margin:		4px;
+		margin:		6px;
 	}
 
 
@@ -117,7 +155,6 @@
 		left:	25px;
 		width:	32px;
 		height:	32px;
-		xxbackground:	#f00;
 	}
 
 	.IconLabel
@@ -125,13 +162,7 @@
 		display:block;
 		position:	absolute;
 		top:		36px;
-		
-		/* align this to center */
-		xmargin:		0 auto;
-		xwidth:		calc(100% - 6px);
-		
 		padding:	2px;
-		text-align:	center;
 	}
 
 
@@ -142,29 +173,33 @@
 		color:		#fff;
 	}
 
-.MenuBar .MenuItem:first-letter
-{
-	text-decoration:	underline;
-}
-.MenuBar .MenuItem
-{
-	padding:	4px 4px 4px 6px;
-	display:	inline-block;
-}
+	.MenuBar
+	{
+		display:	flex;
+	}
 
-.MenuBar .MenuItem:hover
-{
-	background-color:	#00C;
-	color:				#fff;
-}
+	.MenuBar .MenuItem:first-letter
+	{
+		text-decoration:	underline;
+	}
+	.MenuBar .MenuItem
+	{
+		padding:	4px 4px 4px 6px;
+	}
+
+	.MenuBar .MenuItem:hover
+	{
+		background-color:	#00C;
+		color:				#fff;
+	}
 
 </style>
 </head>
 <body>
 
 <div class=Window>
-<div class=TitleBar>Test Window</div>
-<div class=MenuBar><div class=MenuItem>File</div></div>
+<div class=TitleBar><div class=TitleIcon>X</div><div class=TitleText>Test Window</div><div class=Button>_</div><div class=Button>X</div></div>
+<div class=MenuBar><div class=MenuItem>File</div><div class=MenuItem>Help</div></div>
 <div class=IconView>
 	<div class=Icon><img src=Icons/folder.png class=IconIcon></img><div class=IconLabel>CartMon.exe</div></div>
 	<div class=Icon><img src=Icons/cddrive.png class=IconIcon></img><div class=IconLabel>OtherIcon.exe</div></div>
