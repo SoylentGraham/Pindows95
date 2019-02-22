@@ -103,6 +103,12 @@ function PlayStartupSound(Event)
 		document.removeEventListener( Event.type, PlayStartupSound);
 }
 
+
+Pop.TControl = function(Dom,Name)
+{
+	this.Name = Name;
+}
+
 //	each of these is a control, and has its own drawquad() and uniforms
 //	Window
 //		TitleBar
@@ -116,13 +122,15 @@ function PlayStartupSound(Event)
 //			Icon
 Pop.TWindow = function(Dom,Name)
 {
+	Pop.TControl.apply(this,arguments);
+	
 	let DomElement = Dom.CreateElement(Name);
 	DomElement.Control = this;
 	//this.TitleBar = new Pop.TTitleBar(Dom,Name+"_TitleBar");
 	
 	this.GetRenderCommands = function(ParentRect,Element)
 	{
-		let WindowCmd = new TRenderCommand( Element.Name + 'Window' );
+		let WindowCmd = new TRenderCommand( Element.Name );
 		WindowCmd.Rect = ParentRect;
 		WindowCmd.Shader = 'Window';
 		
@@ -137,7 +145,7 @@ Pop.TWindow = function(Dom,Name)
 		let TitleBarCmds = [];
 		let MakeTitleBarCmd = function(PaddedRect,Index)
 		{
-			let TitleBarCmd = new TRenderCommand( Element.Name + 'TitleBar'+Index );
+			let TitleBarCmd = new TRenderCommand( Element.Name + '_TitleBar'+Index );
 			Debug("PaddedRect = " +JSON.stringify(PaddedRect) );
 			TitleBarCmd.Rect = PaddedRect;
 			TitleBarCmd.Shader = 'TitleBar';
@@ -160,12 +168,13 @@ var Renderer = new Pop.HtmlRenderer('DynamicDom');
 var Dom = new Pop.HtmlDom();
 var Debug = Pop.Debug;
 
+var HelloWindow = null;
 
 function Init()
 {
 	PlayStartupSound();
 	
-	let Window2 = new Pop.TWindow(Dom,'Hello!');
+	//HelloWindow = new Pop.TWindow(Dom,'Hello!');
 	
 	Renderer.OnUpdate = Update;
 }
@@ -173,6 +182,9 @@ function Init()
 
 function Update()
 {
+	let WindowElement = Dom.GetElement(HelloWindow.Name);
+	WindowElement.Private.Rect.x += 1;
+	
 	let RenderCommands = Dom.GetRenderCommands();
 	//Debug("got RenderCommands x" + RenderCommands.length);
 	Renderer.Render( RenderCommands );
