@@ -1,0 +1,179 @@
+@font-face
+{
+	font-family: MsSansSerif;
+	src: url("MsSansSerif.ttf") ;/*format("opentype");*/
+}
+
+body, .Desktop
+{
+	/* current closest I can get to original */
+	font-family:	MsSansSerif, courier;
+	font-smooth: never;
+	-webkit-font-smoothing : none;
+	font-size:		11px;
+	
+	image-rendering: pixelated;
+	
+	background:		#0cc;
+	
+	position:		relative;
+}
+
+.Window
+{
+	/* 2 borders on a window! */
+	border-top:		1px #ccc solid;
+	border-left:	1px #ccc solid;
+	border-bottom:	1px #000 solid;
+	border-right:	1px #000 solid;
+	/* x offset, y offset, blur radius, spread radius, colour */
+	box-shadow:		inset 1px 1px 0px 0px #fff, inset -1px -1px 0px 0px #888;
+	
+	padding:		3px;
+	
+	background:		#ccc;
+	
+	position:	absolute;
+	left:		10px;
+	top:		20px;
+}
+
+
+.IconView
+{
+	/* embossed border */
+	/* 2 borders on a window! */
+	border-bottom:	1px #fff solid;
+	border-right:	1px #fff solid;
+	border-top:		1px #888 solid;
+	border-left:	1px #888 solid;
+	/* x offset, y offset, blur radius, spread radius, colour */
+	box-shadow:		inset -1px -1px 0px 0px #ccc, inset 1px 1px 0px 0px #000;
+	
+	display:	flex;
+	flex-wrap:	wrap;
+	margin:	1px;
+	/*
+	 position:	absolute;
+	 bottom:	0px;
+	 top:		0px;
+	 left:		0px;
+	 right:		0xp;
+	 */
+	background:		#fff;
+}
+
+
+.TitleBar
+{
+	background:	#00c;
+	padding:	3px;
+	color:		#fff;
+	margin-bottom:	2px;
+	
+	/*
+	 gr: this is all blurry atm, can't make it pixel-bold :/
+	 also, the weight doesn't do anything at 11px
+	 font-size:		12px;
+	 font-weight:	900;
+	 */
+	
+	display:		flex;
+	
+}
+
+.TitleBar .TitleIcon
+{
+	display:	none;
+	width:		16px;
+	xheight:	16px;
+	
+}
+
+.TitleBar .TitleText
+{
+	flex-grow:	99;
+}
+
+.TitleBar .Button
+{
+	background:		#ccc;
+	border-top:		1px #fff solid;
+	border-left:	1px #fff solid;
+	border-bottom:	1px #000 solid;
+	border-right:	1px #000 solid;
+	/* x offset, y offset, blur radius, spread radius, colour */
+	box-shadow:		inset -1px -1px 0px 0px #888, inset 1px 1px 0px 0px #ccc;
+	
+	color:			#000;
+	width:			10px;
+	height:			10px;
+	text-align:		center;
+	vertical-align:	middle;
+	margin-left:	2px;
+	
+	/* swap this for wingdings */
+	font-size:		8px;
+	font-weight:	bold;
+}
+
+.Icon
+{
+	display:	flex;
+	justify-content:	center;
+	position:	relative;
+	width:		82px;
+	height:		62px;
+	margin:		6px;
+}
+
+
+.Icon:hover .IconIcon
+{
+	filter: url(#BlueFilter);
+}
+
+.IconIcon
+{
+	position:	absolute;
+	top:	0px;
+	left:	25px;
+	width:	32px;
+	height:	32px;
+}
+
+.IconLabel
+{
+	display:block;
+	position:	absolute;
+	top:		36px;
+	padding:	2px;
+}
+
+
+.Icon:hover .IconLabel
+{
+	background:	#00C;
+	border:		dotted 1px #FF0;
+	color:		#fff;
+}
+
+.MenuBar
+{
+	display:	flex;
+}
+
+.MenuBar .MenuItem:first-letter
+{
+	text-decoration:	underline;
+}
+.MenuBar .MenuItem
+{
+	padding:	4px 4px 4px 6px;
+}
+
+.MenuBar .MenuItem:hover
+{
+	background-color:	#00C;
+	color:				#fff;
+}
