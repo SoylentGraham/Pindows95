@@ -4,7 +4,7 @@
 	src: url("MsSansSerif.ttf") ;/*format("opentype");*/
 }
 
-body, .Desktop
+body
 {
 	/* current closest I can get to original */
 	font-family:	MsSansSerif, courier;
@@ -17,6 +17,8 @@ body, .Desktop
 	background:		#0cc;
 	
 	position:		relative;
+	margin:			0px;
+	padding:		0px;
 }
 
 .Window
@@ -53,7 +55,7 @@ body, .Desktop
 	
 	display:	flex;
 	flex-wrap:	wrap;
-	margin:	1px;
+	xmargin:	1px;
 	/*
 	 position:	absolute;
 	 bottom:	0px;
@@ -64,6 +66,23 @@ body, .Desktop
 	background:		#fff;
 }
 
+.IconView#Desktop
+{
+	border:		none;
+	box-shadow:	none;
+	background:	transparent;
+}
+
+
+.TitleBar:before
+{
+	xxcontent:	attr(id);
+	content:	attr(content);
+	overflow:	hidden;
+	position:	absolute;
+	top:		3px;
+	left:		3px;
+}
 
 .TitleBar
 {
@@ -129,12 +148,13 @@ body, .Desktop
 }
 
 
-.Icon:hover .IconIcon
+.Icon:hover .IconImage,
+.IconImage:hover
 {
 	filter: url(#BlueFilter);
 }
 
-.IconIcon
+.IconImage
 {
 	position:	absolute;
 	top:	0px;
@@ -145,6 +165,7 @@ body, .Desktop
 
 .IconLabel
 {
+	xbackground:red;
 	display:block;
 	position:	absolute;
 	top:		36px;
@@ -152,7 +173,19 @@ body, .Desktop
 }
 
 
-.Icon:hover .IconLabel
+.IconLabel:before
+{
+	content:	attr(content);
+	xxoverflow:	hidden;
+	position:	absolute;
+	xtop:		3px;
+	xleft:		4px;
+	width:		100%;
+	text-align:	center;
+}
+
+.Icon:hover .IconLabel,
+.IconLabel:hover 
 {
 	background:	#00C;
 	border:		dotted 1px #FF0;

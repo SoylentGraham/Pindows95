@@ -27,9 +27,9 @@
 			#DynamicDom
 			{
 				display:	block;
-				position:	relative;
+				position:	absolute;
 				width:		50vw;
-				height:		50vh;
+				height:		40vh;
 				xbackground:	black;
 			}
 		
@@ -41,25 +41,24 @@
 		
 </head>
 <body>
+	
 <audio id="StartupSound" src="Icons/tada.mp3"></audio>
-
-
-<div id="DynamicDom"></div>
-
-
 <div class=Window>
 <div class=TitleBar><div class=TitleIcon>X</div><div class=TitleText>Test Window</div><div class=Button>_</div><div class=Button>X</div></div>
 <div class=MenuBar><div class=MenuItem>File</div><div class=MenuItem>Help</div></div>
 <div class=IconView>
-	<div class=Icon><img src=Icons/folder.png class=IconIcon></img><div class=IconLabel>CartMon.exe</div></div>
-	<div class=Icon><img src=Icons/cddrive.png class=IconIcon></img><div class=IconLabel>OtherIcon.exe</div></div>
-	<div class=Icon><img src=Icons/recyclefull.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
-	<div class=Icon><img src=Icons/networkneighbourhood.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
-	<div class=Icon><img src=Icons/help.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
-	<div class=Icon><img src=Icons/settings.png class=IconIcon></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/folder.png class=IconImage></img><div class=IconLabel>CartMon.exe</div></div>
+	<div class=Icon><img src=Icons/cddrive.png class=IconImage></img><div class=IconLabel>OtherIcon.exe</div></div>
+	<div class=Icon><img src=Icons/recyclefull.png class=IconImage></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/networkneighbourhood.png class=IconImage></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/help.png class=IconImage></img><div class=IconLabel>Hi</div></div>
+	<div class=Icon><img src=Icons/settings.png class=IconImage></img><div class=IconLabel>Hi</div></div>
 </div>
 </div>
 
+<div id="DynamicDom"></div>
+
+ 
 <script>
 	
 	//	have a dom manager
@@ -107,6 +106,17 @@ function PlayStartupSound(Event)
 Pop.TControl = function(Dom,Name)
 {
 	this.Name = Name;
+	
+	this.OnClick = function(uv,FirstClick,Button)	{}
+	this.OnHover = function(uv)						{}
+	this.OnScroll = function(ScrollHv,uv)			{}
+	
+	this.GetChildRects = function(Rect,ChildCount)
+	{
+		let Padding = 2;
+		let Cols = Math.max( 1, Math.floor( Math.sqrt( ChildCount ) ) );
+		return Rect.Split( Padding, Cols, Cols );
+	}
 }
 
 //	each of these is a control, and has its own drawquad() and uniforms
@@ -128,6 +138,13 @@ Pop.TWindow = function(Dom,Name)
 	DomElement.Control = this;
 	//this.TitleBar = new Pop.TTitleBar(Dom,Name+"_TitleBar");
 	
+	//	this should be a more intrinsic func
+	this.GetRect = function()
+	{
+		return new Math.Rect( 300, 80, 300, 200 );
+	}
+	DomElement.GetRect = this.GetRect.bind(this);
+	
 	this.GetRenderCommands = function(ParentRect,Element)
 	{
 		let WindowCmd = new TRenderCommand( Element.Name );
@@ -135,37 +152,103 @@ Pop.TWindow = function(Dom,Name)
 		WindowCmd.Shader = 'Window';
 		
 		let Padding = 4;
-		let TitleBarHeight = 18;
+		let TitleBarHeight = 17;
 		//Debug("ParentRect = " + JSON.stringify(ParentRect));
-		let PaddedRects = ParentRect.Split( Padding, 1, 1 );
+		let PaddedRect = ParentRect.Split( Padding, 1, 1 )[0];
 		
-		PaddedRects = [PaddedRects[0]];
-		PaddedRects[0].h = TitleBarHeight;
+		PaddedRect.h = TitleBarHeight;
 
-		let TitleBarCmds = [];
-		let MakeTitleBarCmd = function(PaddedRect,Index)
-		{
-			let TitleBarCmd = new TRenderCommand( Element.Name + '_TitleBar'+Index );
-			Debug("PaddedRect = " +JSON.stringify(PaddedRect) );
-			TitleBarCmd.Rect = PaddedRect;
-			TitleBarCmd.Shader = 'TitleBar';
-			//	override the current CSS for the non-dynamic stuff
-			TitleBarCmd.Uniforms['padding'] = 0;
-			
-			TitleBarCmds.push( TitleBarCmd );
-		}
-		PaddedRects.forEach(MakeTitleBarCmd);
-		return [WindowCmd].concat( TitleBarCmds );;
+		let TitleBarCmd = new TRenderCommand( Element.Name + '_TitleBar' );
+		//Debug("PaddedRect = " +JSON.stringify(PaddedRect) );
+		TitleBarCmd.Rect = PaddedRect;
+		TitleBarCmd.Shader = 'TitleBar';
+		//	override the current CSS for the non-dynamic stuff
+		TitleBarCmd.Uniforms['padding'] = 0;
+		TitleBarCmd.Uniforms['content'] = this.Name;
+		
+		return [WindowCmd,TitleBarCmd];
 	}
 }
 
+
+
+Pop.TIcon = function(Dom,Name,Parent)
+{
+	Pop.TControl.apply(this,arguments);
+	
+	let DomElement = Dom.CreateElement(Name,Parent);
+	DomElement.Control = this;
+	
+	this.Label = "Label";
+	this.Image = "Icons/recyclefull.png";
+	
+	this.GetRenderCommands = function(ParentRect,Element)
+	{
+		//	split rect
+		let ImageRect = new Math.Rect( ParentRect.x, ParentRect.y, 32, 32 );
+		ImageRect.x += (ParentRect.w - ImageRect.w) / 2;
+		let Gap = 4;
+		let LabelRect = new Math.Rect( ParentRect.x, ImageRect.y + ImageRect.h + Gap, ParentRect.w, ParentRect.h );
+		LabelRect.h = 20;
+		
+		let IconImage = new TRenderCommand( Element.Name+"_Image" );
+		IconImage.Rect = ImageRect;
+		IconImage.Shader = 'IconImage';
+		IconImage.Uniforms['backgroundImage'] = 'url("' + this.Image + '")';
+		
+		let IconLabel = new TRenderCommand( Element.Name+"_Label" );
+		IconLabel.Rect = LabelRect;
+		IconLabel.Shader = 'IconLabel';
+		IconLabel.Uniforms['content'] = this.Label;
+		
+		return [IconImage,IconLabel];
+	}
+}
+
+
+Pop.TIconView = function(Dom,Name,Parent)
+{
+	Pop.TControl.apply(this,arguments);
+	
+	let DomElement = Dom.CreateElement(Name,Parent);
+	DomElement.Control = this;
+	
+	this.GetChildRects = function(Rect,ChildCount)
+	{
+		//	split rect into icon dimensions
+		let IconWidth = 88;
+		let IconHeight = 58;
+		let Padding = 8;
+		let ChildRects = [];
+		for ( let y=Padding;	y<Rect.h;	y+=IconHeight+Padding )
+			for ( let x=Padding;	x<Rect.w;	x+=IconWidth+Padding )
+				ChildRects.push( new Math.Rect( Rect.x+x, Rect.y+y, IconWidth, IconHeight ) );
+				
+		return ChildRects;
+	}
+	
+	this.GetRenderCommands = function(ParentRect,Element)
+	{
+		let Cmd = new TRenderCommand( Element.Name );
+		Cmd.Rect = ParentRect;
+		Cmd.Shader = 'IconView';
+		
+		return [Cmd];
+	}
+	
+	this.AddIcon = function(Name)
+	{
+		let Icon = new Pop.TIcon( Dom, Name );
+		return Icon;
+	}
+}
 
 
 
 //	in theory, we can swap these so Dom can become an arbirtry renderer for a GL component
 //	or we can stream render commands
 var Renderer = new Pop.HtmlRenderer('DynamicDom');
-var Dom = new Pop.HtmlDom();
+var Dom = new Pop.HtmlDom('DynamicDom');
 var Debug = Pop.Debug;
 
 var HelloWindow = null;
@@ -174,7 +257,18 @@ function Init()
 {
 	PlayStartupSound();
 	
-	//HelloWindow = new Pop.TWindow(Dom,'Hello!');
+	var Icons = new Pop.TIconView(Dom,"Desktop");
+	var Ico0 = Icons.AddIcon("Recycle Bin");
+	Ico0.Label = "Recycle Bin";
+	Ico0.Image = "Icons/recyclefull.png";
+	
+	var Ico1 = Icons.AddIcon("Network Neighbourhood");
+	Ico1.Label = "Network Neighbourhood";
+	Ico1.Image = "Icons/networkneighbourhood.png";
+
+	HelloWindow = new Pop.TWindow(Dom,'Hello!');
+	
+
 	
 	Renderer.OnUpdate = Update;
 }
@@ -182,8 +276,8 @@ function Init()
 
 function Update()
 {
-	let WindowElement = Dom.GetElement(HelloWindow.Name);
-	WindowElement.Private.Rect.x += 1;
+	//let WindowElement = Dom.GetElement(HelloWindow.Name);
+	//WindowElement.Private.Rect.x += 1;
 	
 	let RenderCommands = Dom.GetRenderCommands();
 	//Debug("got RenderCommands x" + RenderCommands.length);
