@@ -196,7 +196,7 @@
 </style>
 </head>
 <body>
-
+<audio id="StartupSound" src="Icons/tada.mp3"></audio>
 <div class=Window>
 <div class=TitleBar><div class=TitleIcon>X</div><div class=TitleText>Test Window</div><div class=Button>_</div><div class=Button>X</div></div>
 <div class=MenuBar><div class=MenuItem>File</div><div class=MenuItem>Help</div></div>
@@ -287,13 +287,44 @@ function PopHtml()
 var Renderer = new PopHtml();
 var Dom = new HtmlDom();
 
+	//	temp as I just want to play the sound
+	function PlayStartupSound(Event)
+	{
+		//	if we can't play (probably auto play) then setup an event
+		//	gr: this now is setup so whatever event will fire once the session has been interacted with
+		//		so we can use mousemove
+		let SetupDefferedPlay = function(Exception)
+		{
+			document.addEventListener("mousemove", PlayStartupSound);
+			//document.addEventListener("click", PlayStartupSound);
+		};
+		
+		console.log(Event);
+		let Sound = document.getElementById("StartupSound");
+		Sound.play().catch(SetupDefferedPlay);
+		
+		//	unsubscribe
+		if ( Event )
+			document.removeEventListener( Event.type, PlayStartupSound);
+	}
+
+	function Init()
+	{
+		PlayStartupSound();
+		
+		//	start update loop
+		Renderer.OnRender = Update;
+	}
+
+
 	function Update()
 	{
 		let RenderCommands = Dom.GetRenderCommands();
 		Renderer.Render( RenderCommands );
 	}
-	
-	
+
+	Init();
+
 </script>
 
 </body>
